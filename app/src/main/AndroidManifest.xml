@@ -10,6 +10,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Almacenamiento_de_Datos">
         <activity
+            android:name=".transfer_activity"
+            android:exported="false" />
+        <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
