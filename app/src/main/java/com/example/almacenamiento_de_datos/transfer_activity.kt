@@ -22,7 +22,7 @@ class transfer_activity : AppCompatActivity() {
             findleMessage.text = "No existe la información correspondiente"
         }
         else if(data != null) {
-            findleMessage.text = "Usuario: ${data.getString("nameUser")} \nContraseña: ${data.getString("passwordUser")}"
+            findleMessage.text = "Usuario guardado: ${data.getString("nameUser")} \nContraseña guardado: ${data.getString("passwordUser")}"
         }
             val btnExit:Button = findViewById(R.id.txtSalir)
             btnExit.setOnClickListener{onClick()}

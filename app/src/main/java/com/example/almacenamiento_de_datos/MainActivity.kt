@@ -10,6 +10,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 
+
 class MainActivity : AppCompatActivity() {
 
     var campoUsuario: EditText? = null
@@ -17,57 +18,73 @@ class MainActivity : AppCompatActivity() {
     var txtUsuario: TextView? = null
     var txtPass: TextView? = null
 
-    private fun iniciarComponentes() {
-        var btnCargar:Button=findViewById(R.id.btnCargar)
-        btnCargar.setOnClickListener { validarDatos() }
-
-        campoUsuario=findViewById(R.id.campoUser)
-        campoPass=findViewById(R.id.campoPass)
-        txtUsuario=findViewById(R.id.txtUsuario)
-        txtPass=findViewById(R.id.txtPass)
-
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
         iniciarComponentes()
         cargarDatos()
 
     }
-    private fun validarDatos() {
-        val usuario = campoUsuario?.text.toString()
-        val pass = campoPass?.text.toString()
 
-        if (usuario.isNotEmpty() && pass.isNotEmpty()) {
-            cargarDatos(usuario, pass)
-        } else {
-            Toast.makeText(this, "Por favor, ingrese usuario y contraseña", Toast.LENGTH_SHORT).show()
-        }
+    private fun iniciarComponentes() {
+
+        var btnGuardar: Button = findViewById(R.id.btnGuardar)
+        btnGuardar.setOnClickListener { guardarDatos() }
+
+        var btnCargar: Button = findViewById(R.id.btnCargar)
+        btnCargar.setOnClickListener { cargarDatos() }
+
+        campoUsuario = findViewById(R.id.campoUser)
+        campoPass = findViewById(R.id.campoPass)
     }
 
-    private fun cargarDatos(user: String, pass: String) {
-        var preferences: SharedPreferences = getSharedPreferences("credenciales", Context.MODE_PRIVATE)
-        var storedUser: String? =preferences.getString("user","No existe la información")
-        var storedPass: String? =preferences.getString("pass","No existe la información")
+    private fun guardarDatos() {
 
-        if (storedUser == user && storedPass == pass) {
+        var preferences: SharedPreferences =
+            getSharedPreferences("credenciales", Context.MODE_PRIVATE)
+
+        var usuario = campoUsuario?.text.toString()
+        var pass = campoPass?.text.toString()
+
+        var editor: SharedPreferences.Editor = preferences.edit()
+        editor.putString("user", usuario)
+        editor.putString("pass", pass)
+
+        txtUsuario?.text = usuario
+        txtPass?.text = pass
+
+        editor.commit()
+
+        Toast.makeText(this, "Se han registrado los datos", Toast.LENGTH_SHORT).show()
+    }
+
+    private fun cargarDatos() {
+        var preferences: SharedPreferences =
+            getSharedPreferences("credenciales", Context.MODE_PRIVATE)
+
+        var storedUser: String? = preferences.getString("user", "")
+        var storedPass: String? = preferences.getString("pass", "")
+
+        var user = campoUsuario?.text.toString()
+        var pass = campoPass?.text.toString()
+
+        if (user.isEmpty() || pass.isEmpty()) {
+            Toast.makeText(this, "Bienvenido, ingrese usuario y contraseña", Toast.LENGTH_SHORT).show()
+        } else if (storedUser == user && storedPass == pass) {
+            txtUsuario?.text = storedUser
+            txtPass?.text = storedPass
+            Toast.makeText(this, "Credenciales válidas, sus datos se han cargado", Toast.LENGTH_SHORT).show()
             val intent = Intent(this, transfer_activity::class.java)
             val content: Bundle = Bundle()
-
             content.putString("nameUser", user)
             content.putString("passwordUser", pass)
-
             intent.putExtras(content)
             startActivity(intent)
         } else {
+            campoUsuario?.error = "Usuario o contraseña incorrectos"
+            campoPass?.error = "Usuario o contraseña incorrectos"
             Toast.makeText(this, "Usuario o contraseña incorrectos", Toast.LENGTH_SHORT).show()
         }
     }
-
-
-
-
-
-
 }
