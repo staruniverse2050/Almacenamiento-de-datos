@@ -41,25 +41,29 @@ class MainActivity : AppCompatActivity() {
 
     private fun guardarDatos() {
 
-        var preferences: SharedPreferences =
-            getSharedPreferences("credenciales", Context.MODE_PRIVATE)
+            var preferences: SharedPreferences =
+                getSharedPreferences("credenciales", Context.MODE_PRIVATE)
 
-        var usuario = campoUsuario?.text.toString()
-        var pass = campoPass?.text.toString()
+            var usuario = campoUsuario?.text.toString()
+            var pass = campoPass?.text.toString()
 
-        var editor: SharedPreferences.Editor = preferences.edit()
-        editor.putString("user", usuario)
-        editor.putString("pass", pass)
+            var editor: SharedPreferences.Editor = preferences.edit()
+            editor.putString("user", usuario)
+            editor.putString("pass", pass)
 
-        txtUsuario?.text = usuario
-        txtPass?.text = pass
+            txtUsuario?.text = usuario
+            txtPass?.text = pass
 
-        editor.commit()
+            campoUsuario?.error = null
+            campoPass?.error = null
 
-        Toast.makeText(this, "Se han registrado los datos", Toast.LENGTH_SHORT).show()
-    }
+            editor.commit()
 
-    private fun cargarDatos() {
+            Toast.makeText(this, "Se han registrado los datos", Toast.LENGTH_SHORT).show()
+        }
+
+
+        private fun cargarDatos() {
         var preferences: SharedPreferences =
             getSharedPreferences("credenciales", Context.MODE_PRIVATE)
 
@@ -81,10 +85,27 @@ class MainActivity : AppCompatActivity() {
             content.putString("passwordUser", pass)
             intent.putExtras(content)
             startActivity(intent)
-        } else {
-            campoUsuario?.error = "Usuario o contraseña incorrectos"
-            campoPass?.error = "Usuario o contraseña incorrectos"
-            Toast.makeText(this, "Usuario o contraseña incorrectos", Toast.LENGTH_SHORT).show()
+
+            campoUsuario?.error = null
+            campoPass?.error = null
+
+        } else if(storedUser != user && storedPass != pass){
+            campoUsuario?.error = "Usuario incorrecto"
+            campoPass?.error = "Contraseña incorrecta"
+            Toast.makeText(this, "El usuario o la contraseña ingresados no coinciden", Toast.LENGTH_SHORT).show()
+
+    } else if (storedUser != user) {
+            campoUsuario?.error = "Usuario incorrecto"
+            Toast.makeText(
+                this,
+                "El usuario ingresado no coincide",
+                Toast.LENGTH_SHORT
+            ).show()
+        }
+        else {
+            campoPass?.error = "Contraseña incorrecta"
+            Toast.makeText(this, "La contraseña ingresada no coincide", Toast.LENGTH_SHORT).show()
         }
     }
+
 }
